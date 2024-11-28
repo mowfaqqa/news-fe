@@ -2,7 +2,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const [title, setTitle] = useState("");
@@ -20,7 +20,7 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:5000/api/blogs",
+        "https://news-be-c2t4.onrender.com/api/create",
         { title, content },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -36,7 +36,7 @@ export default function Dashboard() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      router.push("/login");
+      router.push("/");
     }
   }, []);
 
@@ -76,7 +76,7 @@ export default function Dashboard() {
           type="submit"
           className="bg-blue-500 w-full p-2 rounded text-white"
         >
-          Upload Blog
+          Upload News
         </button>
       </form>
     </div>
