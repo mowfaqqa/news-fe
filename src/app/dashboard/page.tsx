@@ -8,6 +8,7 @@ export default function Dashboard() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [message, setMessage] = useState("");
+  const [image, setImage] = useState<any>(null);
   const router = useRouter();
 
   const handleLogout = () => {
@@ -17,19 +18,32 @@ export default function Dashboard() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    if (image) formData.append("image", image);
     try {
       const token = localStorage.getItem("token");
       await axios.post(
         "https://news-be-c2t4.onrender.com/api/create",
-        { title, content },
+        formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setMessage("Blog uploaded successfully!");
       setTitle("");
       setContent("");
+      setImage(null);
     } catch (err) {
       console.log(err);
       setMessage("Failed to upload blog");
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setImage(e.target.files[0]);
+    } else {
+      setImage(null);
     }
   };
 
@@ -63,6 +77,15 @@ export default function Dashboard() {
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
+        <div className="mb-4">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+
         <div className="mb-4">
           <textarea
             placeholder="Content"
